@@ -1,3 +1,158 @@
+libsdl1.2 (1.2.15-5) unstable; urgency=low
+
+  * Restrict libts (touch screen) input method to linux-any architectures, not
+    available elsewhere
+
+ -- Manuel A. Fernandez Montecelo <manuel.montezelo@gmail.com>  Thu, 21 Jun 2012 14:20:55 +0100
+
+libsdl1.2 (1.2.15-4) unstable; urgency=low
+
+  [ Manuel A. Fernandez Montecelo ]
+  * debian/sdl-config1
+    - Fix typo, progam->program
+  * Enable support for touch screen library (Closes: #674799)
+
+  [ Felix Geyer ]
+  * Re-add dependencies to libsdl1.2-dev that are required for static linking.
+    (Closes: #670122)
+  * Bump Standards-Version to 3.9.3, no further changes necessary.
+
+  [ Sam Hocevar ]
+  * debian/patches/fix_joystick_misc_axes.diff: fix a joystick remapping
+    bug causing some axes to malfunction (Closes: #673324).
+
+ -- Manuel A. Fernandez Montecelo <manuel.montezelo@gmail.com>  Mon, 11 Jun 2012 16:04:53 +0100
+
+libsdl1.2 (1.2.15-3) unstable; urgency=low
+
+  [ Felix Geyer ]
+  * Drop all -dev package dependencies of libsdl1.2-dev except libx11-dev and
+    libglu1-mesa-dev.
+  * Add libglu-dev as an alternative to libglu1-mesa-dev.
+
+  [ Manuel A. Fernandez Montecelo ]
+  * Fix for bug "Window corner re-size events ignored by SDL" (Closes: #665779),
+    thanks Andrew Caudwell <acaudwell@gmail.com> for the report and the
+    suggested fix.
+
+ -- Manuel A. Fernandez Montecelo <manuel.montezelo@gmail.com>  Tue, 10 Apr 2012 21:18:20 +0100
+
+libsdl1.2 (1.2.15-2) unstable; urgency=low
+
+  * Add fix_build_joystick_freebsd.diff by Robert Millan to fix build
+    on kfreebsd. (Closes: #659615)
+  * Bump shlibs version to 1.2.11.
+  * Bump debhelper build-dependency to >= 9.
+
+ -- Felix Geyer <debfx-pkg@fobos.de>  Mon, 20 Feb 2012 12:20:47 +0100
+
+libsdl1.2 (1.2.15-1) unstable; urgency=low
+
+  * New upstream release
+  * Seting DM-Upload-Allowed:yes and added myself to Uploaders
+  * Removed patches:
+    - sdlblit_memcpy_fix.diff: it was backported from upstream
+    - joystick_crash.diff: it was backported from upstream (changeset 3590
+      493f252a455c)
+    - x11_add_support_NET_WM_PID.diff: applied upstream (changeset 6169
+      6f3e5ccfd585)
+    - disable_ipod.diff: it wasn't documented nor appeared anywhere in the
+      changelog, and it only disabled its support in the configure script (and
+      the option to add ipod support is off by default, at least in the current
+      version)
+    - disappearingcursor.diff: applied upstream (changeset 4557 4aa31b9207f2)
+    - fixmouseclicks.diff: it was part of a fix applied upstream (same as for
+      the patch disappearingcursor.diff)
+    - no_yasm.diff: applied upstream, picked from Debian (changeset 4538
+      74b5387da0c4)
+    - nasm_include.diff: applied upstream, picked from Debian (changeset 4539
+      d2517c0de52b)
+    - kfreebsd_gnu.diff: applied upstream, picked from Debian (changeset 4537
+      cd344ebc14e9)
+    - relibtoolize.diff: substituted with dh_autoreconf
+  * Disable patch check_SDL_NOKBD_environment_variable.diff at least
+    temporarily, it was rejected explicitly by upstream and it doesn't apply
+    cleanly, so it will need some work/thought
+  * Document remaining patches, refresh them
+  * debian/rules:
+    - dh_install ... -XlibSDLmain.la: to avoid installing this new .la file
+
+ -- Manuel A. Fernandez Montecelo <manuel.montezelo@gmail.com>  Thu, 26 Jan 2012 20:31:21 +0000
+
+libsdl1.2 (1.2.14-7) unstable; urgency=low
+
+  [ Felix Geyer ]
+  * Remove all patches that were disabled.
+  * Switch to source format 3.0 (quilt).
+  * Simplify debian/rules by using dh(1).
+  * Drop ancient Conflicts/Replaces.
+  * Disable the PlayStation 3 Cell driver on ppc64. (Closes: #644908)
+  * Update Vcs control fields to the new git repository. (Closes: #615902)
+  * Drop sequence numbers from the patch filenames.
+  * Fix: SDL_BlitCopyOverlap() copies data between overlapping bitmaps.
+    (Closes: #626048)
+    - Add sdlblit_memcpy_fix.diff, cherry-picked from upstream.
+  * Set _NET_WM_PID property in X11 windows which is used by GNOME Shell and the
+    Unity desktop.
+    - Add x11_add_support_NET_WM_PID.diff from Ubuntu / Marco Trevisan.
+  * Bump Standards-Version to 3.9.2, no further changes necessary.
+  * Override package-name-doesnt-match-sonames lintian warning.
+  * Add a debug package. (Closes: #600292)
+  * Add myself as uploader.
+  * Switch to debhelper compat level v9.
+    - Convert to multiarch. (Closes: #636605)
+    - Exports hardening build flags.
+  * Remove the .la file.
+
+  [ Dominique Dumont ]
+  * control: replaced XC-Package-Type with Package-Type tag
+  * added missing lintian overrides.
+
+ -- Felix Geyer <debfx-pkg@fobos.de>  Sun, 08 Jan 2012 18:33:39 +0100
+
+libsdl1.2 (1.2.14-6.4) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Build improvements from Guillem Jover that should really have gone 
+    with the previous upload. Closes: #614332.
+    + Line-wrap build-depends.
+    + Use -any syntax for architecture-specific stuff.
+    + Fix cross-compilation by using DEB_HOST_* variables.
+    + Update or remove non-existing configure flags.
+    + Forbid dlopening for X11.
+  * Use --enable-debug with the debug keyword, not the noopt one.
+  * Refactor configure options.
+  * Disable NAS. We have PulseAudio now.
+  * Pass --disable-loadso, just to be sure.
+
+ -- Josselin Mouette <joss@debian.org>  Tue, 24 May 2011 22:51:57 +0200
+
+libsdl1.2 (1.2.14-6.3) unstable; urgency=low
+
+  * Non-maintainer upload with maintainer’s approval.
+  * Merge all builds into a single one, there is no more a reason to 
+    keep all these packages.
+  * Remove support for libaa (there’s libcaca), libsvga (directfb 
+    supports more architectures) and libesd (pulseaudio does much more).
+  * Remove obsolete sys-build.mk from source directory.
+
+ -- Josselin Mouette <joss@debian.org>  Sat, 16 Apr 2011 18:25:59 +0200
+
+libsdl1.2 (1.2.14-6.2) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Remove arts as build dependency as is being removed from the archive
+    (Closes: #620982, #581231).
+    - Remove libsdl1.2debian-arts.
+    - Remove references to arts in other packages that this source provides.
+    - Pass --disable-arts to the configure script.
+  
+  [ Ana Beatriz Guerrero Lopez ]
+
+  * Update uploaders, remove aurel32, joss and sho.
+
+ -- Lisandro Damián Nicanor Pérez Meyer <perezmeyer@gmail.com>  Fri, 08 Apr 2011 23:35:29 +0200
+
 libsdl1.2 (1.2.14-6.1) unstable; urgency=medium
 
   * Non-maintainer upload.

@@ -1,7 +1,8 @@
 usr/include/SDL
-usr/lib/*.a
-usr/lib/*.so
-usr/lib/*.la
-usr/lib/pkgconfig
+usr/lib/*/libSDL.a
+usr/lib/*/libSDLmain.a
+usr/lib/*/libSDL.so
+usr/lib/*/pkgconfig
 usr/bin/sdl-config
 usr/share/aclocal/*
+usr/share/man/man3/*

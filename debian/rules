@@ -9,17 +9,7 @@ confflags = --disable-rpath --enable-sdl-dlopen --disable-loadso \
             --disable-nas --disable-esd --disable-arts \
             --disable-alsa-shared --disable-pulseaudio-shared \
             --disable-x11-shared \
-            --enable-video-directfb
-all_confflags = --enable-video-caca
-udeb_confflags = --enable-video-directfb \
-                 --disable-video-x11 \
-                 --disable-dga --disable-video-photon \
-                 --disable-video-fbcon --disable-video-ps2gs \
-                 --disable-video-opengl --disable-video-xbios \
-                 --disable-video-gem --disable-video-caca \
-                 --disable-audio \
-                 --disable-oss --disable-alsa --disable-pulseaudio \
-                 --libdir=\$${prefix}/lib
+            --enable-video-directfb --enable-video-caca
 
 # Only use NASM routines on x86 CPUs
 ifeq ($(DEB_HOST_ARCH_CPU),i386)
@@ -37,29 +27,45 @@ endif
 	dh $@ --with autoreconf --parallel
 
 override_dh_autoreconf:
-	dh_autoreconf ./autogen.sh
+        # aclocal needs to include in specific order, and/or it seems that
+        # doesn't try to find .m4 files in /usr/share/aclocal at all.  Updates
+        # to both .m4 files and ltmain.sh (aclocal and libtoolize) are necessary
+        # to support new architectures aarch64 (arm64) and powerpc64le, and this
+        # seems the more straight way to achieve it.
+        #
+        # An alternative would be to just build-depend on libesd0-dev,
+        # libasound2-dev and libltdl-dev to provide the files "esd.m4 alsa.m4
+        # ltdl.m4" in /usr/share/aclocal, and not use the local "acinclude" dir
+        # at all, but this pull even more dependencies, and unneeded ones.
+        #
+        # Another equivalent alternative, but more verbose:
+        #
+        # ACLOCAL="cat acinclude/esd.m4 acinclude/alsa.m4 acinclude/ltdl.m4 \
+        #           /usr/share/aclocal/libtool.m4 \
+        #           /usr/share/aclocal/ltoptions.m4 \
+        #           /usr/share/aclocal/ltversion.m4 \
+        #           /usr/share/aclocal/ltsugar.m4 >> aclocal.m4; aclocal"
+        #          LIBTOOLIZE="libtoolize -f -i" dh_autoreconf --as-needed
+        #          autoreconf -- -I acinclude -f -i
+	AUTOHEADER=true ACLOCAL="aclocal --force --install -I /usr/share/aclocal/ -I acinclude" LIBTOOLIZE="libtoolize -fi" dh_autoreconf --as-needed
+        # To verify that it worked, grep should find these strings:
+        #
+        #rgrep -i aarch64 .
+        #rgrep -r powerpc64le .
 
 override_dh_auto_configure:
-	dh_auto_configure -Bbuilddir/all -- $(confflags) $(all_confflags)
-	dh_auto_configure -Bbuilddir/udeb -- $(confflags) $(udeb_confflags)
+	dh_auto_configure -- $(confflags)
 
 override_dh_auto_build:
-	dh_auto_build -Bbuilddir/all
-	dh_auto_build -Bbuilddir/udeb
+	dh_auto_build
 	tar czf debian/examples.tar.gz test
 
-override_dh_auto_install:
-	dh_auto_install -Bbuilddir/all
-	dh_auto_install -Bbuilddir/udeb --destdir=debian/tmp-udeb
-
 override_dh_auto_clean:
-	dh_auto_clean -Bbuilddir/all
-	dh_auto_clean -Bbuilddir/udeb
+	dh_auto_clean
 	rm -f debian/examples.tar.gz
 
 override_dh_install:
-	dh_install -plibsdl1.2debian-udeb --sourcedir=debian/tmp-udeb
-	dh_install --remaining-packages --fail-missing -XlibSDL.la -XlibSDLmain.la
+	dh_install --fail-missing -XlibSDL.la -XlibSDLmain.la
 
 override_dh_installdocs:
 	dh_installdocs -Xdocs/man3/SDL
@@ -72,4 +78,4 @@ override_dh_strip:
 	dh_strip --dbg-package=libsdl1.2-dbg
 
 override_dh_makeshlibs:
-	dh_makeshlibs -V"libsdl1.2debian (>= $(SHLIBVER))" --add-udeb=libsdl1.2debian-udeb
+	dh_makeshlibs -V"libsdl1.2debian (>= $(SHLIBVER))"

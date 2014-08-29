@@ -1,3 +1,64 @@
+libsdl1.2 (1.2.15-10) unstable; urgency=medium
+
+  [ Hector Oron ]
+  * d/control: remove libts-dev dependency. (Closes: #751765)
+
+  [ Felix Geyer ]
+  * Enable X11 backingstore only when SDL_VIDEO_X11_BACKINGSTORE is set to
+    prevent tearing. (Closes: #747168)
+    - Add sdl-check-for-SDL_VIDEO_X11_BACKINGSTORE.patch
+
+ -- Felix Geyer <fgeyer@debian.org>  Mon, 30 Jun 2014 21:18:45 +0200
+
+libsdl1.2 (1.2.15-9) unstable; urgency=medium
+
+  * Bump Policy Standards-Version to 3.9.5 (no changes needed)
+  * Use dh_autoreconf in debian/rules without calling ./autogen.sh and
+    perform other tricks to actually support new architectures (arm64,
+    powerpc64le, ...) (Closes: #735253)
+  * Do not build-depend on autotools-dev, dh-autoreconf is supposed to
+    supersede it
+
+ -- Manuel A. Fernandez Montecelo <mafm@debian.org>  Sun, 09 Mar 2014 01:37:39 +0000
+
+libsdl1.2 (1.2.15-8) unstable; urgency=low
+
+  * Remove permanently patch check_SDL_NOKBD_environment_variable.diff, it
+    was rejected explicitly by upstream and could not be applied cleanly,
+    was already disabled fore more than a year
+  * Document fix_joystick_misc_axes.diff with the latest development,
+    submitted upstream again for re-evaluation
+  * Build-depend on autotools-dev to update config.{sub,guess} and modify
+    debian/rules to add support for new ports (needed for arm64)
+  * Use "dh_autoreconf --as-needed" in debian/rules
+
+ -- Manuel A. Fernandez Montecelo <mafm@debian.org>  Mon, 28 Oct 2013 12:55:48 +0000
+
+libsdl1.2 (1.2.15-7) unstable; urgency=low
+
+  * Drop the udeb package as it doesn't have any reverse dependencies anymore.
+    (Closes: #723165)
+
+ -- Felix Geyer <fgeyer@debian.org>  Tue, 17 Sep 2013 18:26:42 +0200
+
+libsdl1.2 (1.2.15-6) unstable; urgency=low
+
+  [ Simon McVittie ]
+  * Clean debian/tmp-udeb so the package can build twice in a row.
+    (Closes: #708756)
+
+  [ Felix Geyer ]
+  * Drop obsolete DM-Upload-Allowed flag.
+  * Bump Standards-Version to 3.9.4, no changes needed.
+  * Add lintian override for dev-pkg-without-shlib-symlink.
+  * Switch to my @debian.org email address.
+
+  [ Manuel A. Fernandez Montecelo ]
+  * Switch to @debian.org address
+  * Bring the man page of sdl-config up to date (Closes: #695836)
+
+ -- Manuel A. Fernandez Montecelo <mafm@debian.org>  Sat, 27 Jul 2013 19:28:59 +0100
+
 libsdl1.2 (1.2.15-5) unstable; urgency=low
 
   * Restrict libts (touch screen) input method to linux-any architectures, not
